@@ -72,8 +72,8 @@ client.on('ready', async () => {
         },
     });
     for await (const game of onGoingGames) {
-        const channel = (await client.channels.fetch(game.channelId)) as TextChannel;
-        await setupGame(game, client, channel);
+        const channel = (await client.channels.fetch(game.channelId).catch(() => null)) as TextChannel | null;
+        if (channel) await setupGame(game, client, channel);
     }
 });
 
