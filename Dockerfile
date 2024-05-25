@@ -1,4 +1,5 @@
-FROM node:20.10.0-alpine AS base
+FROM node:20.10.0 AS base
+RUN apt install libfontconfig1 fontconfig libfontconfig1-dev
 
 FROM base AS install-stage
 WORKDIR /app
