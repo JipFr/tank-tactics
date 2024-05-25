@@ -1,0 +1,43 @@
+{
+  "name": "tank-tactics",
+  "version": "3.0.0",
+  "main": "dist/index.js",
+  "repository": "git@github.com:tanktactics/tank-tactics.git",
+  "author": "Stijn van der Kolk <stijn@kolkies.dev>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@discordjs/collection": "^2.1.0",
+    "@discordjs/rest": "^2.3.0",
+    "@prisma/client": "^5.14.0",
+    "canvas-constructor": "^7.0.2",
+    "chalk": "4.1.2",
+    "dayjs": "^1.11.11",
+    "discord-api-types": "^0.37.85",
+    "discord.js": "^14.15.2",
+    "dotenv": "^16.4.5",
+    "node-fetch": "2.7.0",
+    "readdirp": "^3.6.0",
+    "reflect-metadata": "^0.2.2",
+    "skia-canvas": "^1.0.1",
+    "tsyringe": "^4.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/node-fetch": "2.6.11",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^8.10.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.5",
+    "prisma": "^5.14.0",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "yarn@4.2.2"
+}

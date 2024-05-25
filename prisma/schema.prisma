@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum GameStatus {
+  SETUP
+  STARTING
+  STARTED
+  ENDED
+}
+
+enum GameType {
+  FFA
+  TEAM
+  HIDDEN
+}
+
+enum Team {
+  RED
+  BLUE
+  GREEN
+  YELLOW
+}
+
+enum LogType {
+  WALK
+  POINT_ADD
+  POINT_SUBTRACT
+  RANGE_INCREASE
+  ATTACK
+  KILL
+  GIFT
+  END
+  INFO
+  LIFE_ADD
+  LIFE_REMOVE
+}
+
+model Game {
+  id String @id @default(uuid())
+
+  width         Int
+  height        Int
+  guildId       String
+  channelId     String
+  threadId      String     @unique
+  createdById   String
+  status        GameStatus
+  type          GameType
+  pointInterval Int
+
+  nextPointAt DateTime?
+
+  players Player[]
+  logs    Log[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Log {
+  id String @id @default(uuid())
+
+  type LogType
+
+  data String
+
+  game   Game?   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Player {
+  id String @id @default(uuid())
+
+  userId String
+  points Int
+  range  Int
+  lives  Int
+  kills  Int    @default(0)
+  color  String
+  team   Team?
+
+  coords   Coordinates @relation(fields: [coordsId], references: [id], onDelete: Cascade)
+  coordsId String      @unique
+
+  game   Game?   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, gameId])
+}
+
+model Coordinates {
+  id String @id @default(uuid())
+
+  x Int
+  y Int
+
+  player Player?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
