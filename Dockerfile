@@ -10,6 +10,7 @@ FROM base AS build-stage
 WORKDIR /app
 COPY --from=install-stage /app/node_modules ./node_modules
 COPY . .
+RUN yarn prisma generate
 RUN yarn build
 
 FROM base AS production-stage
