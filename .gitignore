@@ -121,8 +121,5 @@ dev.db-journal
 
 *.db
 
-node_modules
-data.json
-data-*.json
 .env
-game-imgs
+.DS_Store

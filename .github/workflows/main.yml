@@ -1,0 +1,30 @@
+name: CI/CD
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout repository
+
+      - uses: actions/setup-node@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Generate Prisma client
+        run: yarn prisma generate
+
+      - name: TSC Linter
+        run: yarn tsc -p . --noEmit
+
+      # - name: ESLint
+      #   run: yarn lint

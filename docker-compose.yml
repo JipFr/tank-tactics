@@ -1,0 +1,22 @@
+version: '3.8'
+
+name: tank-tactics
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    env_file: .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      - postgres
+
+volumes:
+  postgres:
