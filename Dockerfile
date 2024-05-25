@@ -18,6 +18,7 @@ FROM base AS production-stage
 WORKDIR /app
 COPY --from=build-stage /app/dist ./dist
 COPY --from=build-stage /app/node_modules ./node_modules
+COPY --from=build-stage /app/prisma ./prisma
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn ./.yarn
 CMD ["yarn", "start"]
