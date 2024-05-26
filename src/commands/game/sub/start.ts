@@ -42,7 +42,12 @@ export const gameStartSubCommand: SubcommandFunction<
 
   await gameManagement.startGame(game);
 
-  return respond(interaction, {
+  await respond(interaction, {
+    content: `Starting the game!`,
+    ephemeral: true,
+  });
+
+  await interaction.channel.send({
     content: `Game started!\n${game.players
       .map((p) => `<@${p.userId}>`)
       .join(' ')}`,
