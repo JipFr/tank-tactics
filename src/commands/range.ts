@@ -37,13 +37,10 @@ export default createCommand(RangeCommand)
         content: 'You do not have enough points to use this command.',
       });
 
-    const newRange = await prisma.player.increaseRange(
-      game.id,
-      interaction.user.id
-    );
+    await prisma.player.increaseRange(game.id, interaction.user.id);
 
     respond(interaction, {
-      content: `You have increased your range to ${newRange}.`,
+      content: `You have increased your range to ${player.range + 1}.`,
       files: [await getBoardAsAttachmentBuilder(interaction, game.id)],
     });
   })

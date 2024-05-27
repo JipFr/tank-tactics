@@ -212,7 +212,7 @@ export const prisma = boringPrisma.$extends({
           throw new NotEnoughPointsToIncreaseRangeError();
         }
 
-        boringPrisma.$transaction([
+        await boringPrisma.$transaction([
           boringPrisma.player.update({
             where: { id: player.id },
             data: { range: { increment: 1 }, points: { decrement: 2 } },
@@ -229,8 +229,6 @@ export const prisma = boringPrisma.$extends({
             },
           }),
         ]);
-
-        return player.range + 1;
       },
 
       /**
