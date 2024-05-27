@@ -13,6 +13,7 @@ import {
 import { container } from 'tsyringe';
 import { GameManagement } from '../util/GameManagement';
 import { GameStatus } from '@prisma/client';
+import { getBoardAsAttachmentBuilder } from '../util/getBoard';
 
 const gameManagement = container.resolve(GameManagement);
 
@@ -92,19 +93,19 @@ export default createCommand(AttackCommand)
       throw e;
     }
 
+    let message = `You attacked ${args.target.user}, they have ${
+      data.remainingLives
+    } ${data.remainingLives > 1 ? 'lives' : 'life'} left.`;
+
     if (data.killed) {
-      await respond(interaction, {
-        content: `You killed ${args.target.user} and took ${data.halfPoints} points.`,
-        allowedMentions: { users: [args.target.user.id] },
-      });
-    } else {
-      await respond(interaction, {
-        content: `You attacked ${args.target.user}, they have ${
-          data.remainingLives
-        } ${data.remainingLives > 1 ? 'lives' : 'life'} left.`,
-        allowedMentions: { users: [args.target.user.id] },
-      });
+      message = `You killed ${args.target.user} and took ${data.halfPoints} points.`;
     }
+
+    await respond(interaction, {
+      content: message,
+      files: [await getBoardAsAttachmentBuilder(interaction, game)],
+      allowedMentions: { users: [args.target.user.id] },
+    });
 
     if (await gameManagement.checkIfGameIsOver(game.id)) {
       await gameManagement.handleGameOver(game.id);

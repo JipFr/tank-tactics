@@ -19,6 +19,7 @@ import { Util } from '../util/Util';
 import { DefaultGameSelect, getGame } from '../util/prisma';
 import { gameImageGenerator } from '../util/canvas';
 import { splitArray } from '../util/splitArray';
+import { getBoardAsAttachmentBuilder } from '../util/getBoard';
 const commands =
   container.resolve<Map<string, BuildedCommand<any, any>>>(kCommands);
 const logger = container.resolve<Logger>(kLogger);
@@ -38,8 +39,8 @@ async function handleViewAP(
   game: DefaultGameSelect
 ) {
   const players = game.players.sort((a, b) => {
-    if (a.points === b.points) return b.lives - a.lives;
-    return b.points - a.points;
+    if (a.lives === b.lives) return b.points - a.points;
+    return b.lives - a.lives;
   });
   const splittedUsers = splitArray(players, 10);
   const embeds: EmbedBuilder[] = splittedUsers.map((users) => {
@@ -62,36 +63,8 @@ async function handleViewBoard(
   interaction: ButtonInteraction<'cached'>,
   game: DefaultGameSelect
 ) {
-  const discordMembers = await interaction.guild.members.fetch({
-    user: game.players.map((p) => p.userId),
-  });
-
-  const players = discordMembers.map((member) => {
-    const gamePlayer = game.players.find((p) => p.userId === member.id)!;
-    return {
-      userId: member.id,
-      avatarUrl: member.displayAvatarURL({ size: 32, extension: 'png' }),
-      color: gamePlayer.color,
-      lives: gamePlayer.lives,
-      range: gamePlayer.range,
-      x: gamePlayer.coords.x,
-      y: gamePlayer.coords.y,
-    };
-  });
-
-  const board = await gameImageGenerator({
-    players,
-    height: game.height,
-    width: game.width,
-  });
-
   return respond(interaction, {
-    files: [
-      new AttachmentBuilder(board, {
-        name: `board-${game.id}.png`,
-        description: 'The board for the Tank Tactics game in this forum post.',
-      }),
-    ],
+    files: [await getBoardAsAttachmentBuilder(interaction, game)],
     flags: MessageFlags.Ephemeral,
   });
 }
@@ -276,10 +249,10 @@ export default createEvent('interactionCreate')
         const executedType = interaction.isAutocomplete()
           ? 'autocomplete'
           : interaction.commandType === ApplicationCommandType.Message
-          ? 'message context'
-          : interaction.commandType === ApplicationCommandType.User
-          ? 'user context'
-          : 'chat input';
+            ? 'message context'
+            : interaction.commandType === ApplicationCommandType.User
+              ? 'user context'
+              : 'chat input';
         logger.info(
           `Executed ${executedType} command ${fullCommand} by ${Util.getDiscordUserTag(
             interaction.user
@@ -293,10 +266,10 @@ export default createEvent('interactionCreate')
         const executedType = interaction.isAutocomplete()
           ? 'autocomplete'
           : interaction.commandType === ApplicationCommandType.Message
-          ? 'message context'
-          : interaction.commandType === ApplicationCommandType.User
-          ? 'user context'
-          : 'chat input';
+            ? 'message context'
+            : interaction.commandType === ApplicationCommandType.User
+              ? 'user context'
+              : 'chat input';
         logger.error(
           `Error while executing ${executedType} command ${fullCommand} by ${Util.getDiscordUserTag(
             interaction.user

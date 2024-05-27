@@ -10,6 +10,7 @@ import { createCommand } from '../util/Command';
 import { getGame } from '../util/prisma';
 import { gameImageGenerator } from '../util/canvas';
 import { GameType } from '@prisma/client';
+import { getBoardAsAttachmentBuilder } from '../util/getBoard';
 
 export default createCommand(BoardCommand)
   .registerChatInput(async ({ interaction, respond }) => {
@@ -32,38 +33,9 @@ export default createCommand(BoardCommand)
     );
 
     if (!game) return;
-    // Fetch them all from Discord
-    const discordMembers = await interaction.guild.members.fetch({
-      user: game.players.map((p) => p.userId),
-    });
-
-    const players = discordMembers.map((member) => {
-      const gamePlayer = game.players.find((p) => p.userId === member.id)!;
-      return {
-        userId: member.id,
-        avatarUrl: member.displayAvatarURL({ size: 32, extension: 'png' }),
-        color: gamePlayer.color,
-        lives: gamePlayer.lives,
-        range: gamePlayer.range,
-        x: gamePlayer.coords.x,
-        y: gamePlayer.coords.y,
-      };
-    });
-
-    const board = await gameImageGenerator({
-      players,
-      height: game.height,
-      width: game.width,
-    });
 
     await respond(interaction, {
-      files: [
-        new AttachmentBuilder(board, {
-          name: `board-${game.id}.png`,
-          description:
-            'The board for the Tank Tactics game in this forum post.',
-        }),
-      ],
+      files: [await getBoardAsAttachmentBuilder(interaction, game)],
       ...(game.type !== GameType.HIDDEN
         ? {
             components: [

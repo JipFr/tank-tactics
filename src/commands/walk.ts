@@ -7,6 +7,7 @@ import {
   NotEnoughPointsToWalkThatFarError,
   PlayerDoesNotExistInGameError,
 } from '../util/errors';
+import { getBoardAsAttachmentBuilder } from '../util/getBoard';
 
 export default createCommand(WalkCommand)
   .registerChatInput(async ({ interaction, respond, args }) => {
@@ -68,11 +69,13 @@ export default createCommand(WalkCommand)
     if (takenSteps < args.amount) {
       return respond(interaction, {
         content: `We could only let you move ${takenSteps} steps towards the chosen direction.`,
+        files: [await getBoardAsAttachmentBuilder(interaction, game)],
       });
     }
 
     return respond(interaction, {
       content: `You walked ${takenSteps} steps towards the chosen direction.`,
+      files: [await getBoardAsAttachmentBuilder(interaction, game)],
     });
   })
   .build();
