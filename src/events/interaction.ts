@@ -62,7 +62,7 @@ async function handleViewBoard(
   game: DefaultGameSelect
 ) {
   return respond(interaction, {
-    files: [await getBoardAsAttachmentBuilder(interaction, game)],
+    files: [await getBoardAsAttachmentBuilder(interaction, game.id)],
     flags: MessageFlags.Ephemeral,
   });
 }

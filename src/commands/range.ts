@@ -2,6 +2,7 @@ import { ChannelType } from 'discord.js';
 import { RangeCommand } from '../interactions/commands';
 import { createCommand } from '../util/Command';
 import { getGame, prisma } from '../util/prisma';
+import { getBoardAsAttachmentBuilder } from '../util/getBoard';
 
 export default createCommand(RangeCommand)
   .registerChatInput(async ({ interaction, respond }) => {
@@ -43,6 +44,7 @@ export default createCommand(RangeCommand)
 
     respond(interaction, {
       content: `You have increased your range to ${newRange}.`,
+      files: [await getBoardAsAttachmentBuilder(interaction, game.id)],
     });
   })
   .build();

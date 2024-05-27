@@ -69,13 +69,13 @@ export default createCommand(WalkCommand)
     if (takenSteps < args.amount) {
       return respond(interaction, {
         content: `We could only let you move ${takenSteps} steps towards the chosen direction.`,
-        files: [await getBoardAsAttachmentBuilder(interaction, game)],
+        files: [await getBoardAsAttachmentBuilder(interaction, game.id)],
       });
     }
 
     return respond(interaction, {
       content: `You walked ${takenSteps} steps towards the chosen direction.`,
-      files: [await getBoardAsAttachmentBuilder(interaction, game)],
+      files: [await getBoardAsAttachmentBuilder(interaction, game.id)],
     });
   })
   .build();

@@ -103,7 +103,7 @@ export default createCommand(AttackCommand)
 
     await respond(interaction, {
       content: message,
-      files: [await getBoardAsAttachmentBuilder(interaction, game)],
+      files: [await getBoardAsAttachmentBuilder(interaction, game.id)],
       allowedMentions: { users: [args.target.user.id] },
     });
 

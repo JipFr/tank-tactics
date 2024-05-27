@@ -1,11 +1,13 @@
 import { AttachmentBuilder, BaseInteraction } from 'discord.js';
-import { DefaultGameSelect } from './prisma';
+import { prisma } from './prisma';
 import { gameImageGenerator } from './canvas';
 
 export async function getBoard(
   interaction: BaseInteraction<'cached'>,
-  game: DefaultGameSelect
+  gameId: string
 ) {
+  const game = await prisma.game.getGame(gameId);
+
   const discordMembers = await interaction.guild.members.fetch({
     user: game.players.map((p) => p.userId),
   });
@@ -32,12 +34,12 @@ export async function getBoard(
 
 export async function getBoardAsAttachmentBuilder(
   interaction: BaseInteraction<'cached'>,
-  game: DefaultGameSelect
+  gameId: string
 ) {
-  const board = await getBoard(interaction, game);
+  const board = await getBoard(interaction, gameId);
 
   return new AttachmentBuilder(board, {
-    name: `board-${game.id}.png`,
+    name: `board-${gameId}.png`,
     description: 'The board for the Tank Tactics game in this forum post.',
   });
 }

@@ -33,7 +33,7 @@ export default createCommand(BoardCommand)
     if (!game) return;
 
     await respond(interaction, {
-      files: [await getBoardAsAttachmentBuilder(interaction, game)],
+      files: [await getBoardAsAttachmentBuilder(interaction, game.id)],
       ...(game.type !== GameType.HIDDEN
         ? {
             components: [
