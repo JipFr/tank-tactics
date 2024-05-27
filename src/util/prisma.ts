@@ -583,6 +583,10 @@ export const prisma = boringPrisma.$extends({
               halfPoints
             );
             await transaction.player.pointsAdd(gameId, userId, halfPoints);
+            await transaction.player.update({
+              where: { userId_gameId: { userId, gameId } },
+              data: { kills: { increment: 1 } },
+            });
           });
           return { killed: true, halfPoints, remainingLives: 0 };
         }
