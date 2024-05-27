@@ -1,2 +1,0 @@
-- re-imagine attack response messages, if needed with pings
-- check if walk is possible to -?
