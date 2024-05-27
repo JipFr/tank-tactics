@@ -12,6 +12,7 @@ import {
 } from '../util/errors';
 import { container } from 'tsyringe';
 import { GameManagement } from '../util/GameManagement';
+import { GameStatus } from '@prisma/client';
 
 const gameManagement = container.resolve(GameManagement);
 
@@ -35,6 +36,13 @@ export default createCommand(AttackCommand)
     );
 
     if (!game) return;
+
+    if (game.status !== GameStatus.STARTED) {
+      return respond(interaction, {
+        content: "This game is not started, you can't attack yet.",
+        ephemeral: true,
+      });
+    }
 
     let data = { killed: false, halfPoints: 0, remainingLives: 0 };
 
@@ -93,7 +101,7 @@ export default createCommand(AttackCommand)
       await respond(interaction, {
         content: `You attacked ${args.target.user}, they have ${
           data.remainingLives
-        } ${data.remainingLives > 1 ? 'lifes' : 'live'} left.`,
+        } ${data.remainingLives > 1 ? 'lives' : 'life'} left.`,
         allowedMentions: { users: [args.target.user.id] },
       });
     }
