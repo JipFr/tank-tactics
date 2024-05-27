@@ -1,6 +1,5 @@
 import {
   ActionRowBuilder,
-  AttachmentBuilder,
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
@@ -8,7 +7,6 @@ import {
 import { BoardCommand } from '../interactions/commands';
 import { createCommand } from '../util/Command';
 import { getGame } from '../util/prisma';
-import { gameImageGenerator } from '../util/canvas';
 import { GameType } from '@prisma/client';
 import { getBoardAsAttachmentBuilder } from '../util/getBoard';
 

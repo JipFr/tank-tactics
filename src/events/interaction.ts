@@ -6,7 +6,6 @@ import {
   CommandInteraction,
   ButtonInteraction,
   ChannelType,
-  AttachmentBuilder,
   EmbedBuilder,
 } from 'discord.js';
 import { container } from 'tsyringe';
@@ -17,7 +16,6 @@ import type { Logger } from '../util/Logger';
 import { kCommands, kLogger } from '../util/tokens';
 import { Util } from '../util/Util';
 import { DefaultGameSelect, getGame } from '../util/prisma';
-import { gameImageGenerator } from '../util/canvas';
 import { splitArray } from '../util/splitArray';
 import { getBoardAsAttachmentBuilder } from '../util/getBoard';
 const commands =
