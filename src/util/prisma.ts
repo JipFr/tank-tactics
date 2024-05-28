@@ -102,6 +102,8 @@ export const prisma = boringPrisma.$extends({
 
         let takenSteps = 0;
 
+        let previousX = player.coords.x;
+        let previousY = player.coords.y;
         while (takenSteps < stepAmount) {
           switch (direction) {
             case 'up':
@@ -169,13 +171,15 @@ export const prisma = boringPrisma.$extends({
               data: JSON.stringify({
                 player: userId,
                 direction,
-                oldX: player.coords.x,
-                oldY: player.coords.y,
+                oldX: previousX,
+                oldY: previousY,
                 newX: position.x,
                 newY: position.y,
               }),
             },
           });
+          previousX = position.x;
+          previousY = position.y;
         }
 
         if (takenSteps > 0) {
