@@ -40,7 +40,7 @@ export default createCommand(AttackCommand)
 
     if (game.status !== GameStatus.STARTED) {
       return respond(interaction, {
-        content: "This game is not started, you can't attack yet.",
+        content: "This game is not running, you can't attack.",
         ephemeral: true,
       });
     }

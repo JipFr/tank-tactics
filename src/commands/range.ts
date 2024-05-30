@@ -3,6 +3,7 @@ import { RangeCommand } from '../interactions/commands';
 import { createCommand } from '../util/Command';
 import { getGame, prisma } from '../util/prisma';
 import { getBoardAsAttachmentBuilder } from '../util/getBoard';
+import { GameStatus } from '@prisma/client';
 
 export default createCommand(RangeCommand)
   .registerChatInput(async ({ interaction, respond }) => {
@@ -24,6 +25,13 @@ export default createCommand(RangeCommand)
     );
 
     if (!game) return;
+
+    if (game.status !== GameStatus.STARTED) {
+      return respond(interaction, {
+        content: "This game is not running, you can't increase your range.",
+        ephemeral: true,
+      });
+    }
 
     const player = game.players.find((p) => p.userId === interaction.user.id);
 

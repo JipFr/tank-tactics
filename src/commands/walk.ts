@@ -8,6 +8,7 @@ import {
   PlayerDoesNotExistInGameError,
 } from '../util/errors';
 import { getBoardAsAttachmentBuilder } from '../util/getBoard';
+import { GameStatus } from '@prisma/client';
 
 export default createCommand(WalkCommand)
   .registerChatInput(async ({ interaction, respond, args }) => {
@@ -29,6 +30,13 @@ export default createCommand(WalkCommand)
     );
 
     if (!game) return;
+
+    if (game.status !== GameStatus.STARTED) {
+      return respond(interaction, {
+        content: "This game is not running, you can't walk.",
+        ephemeral: true,
+      });
+    }
 
     let takenSteps = 0;
 
