@@ -26,13 +26,6 @@ export const gameSetPointIntervalCommand: SubcommandFunction<
 
   if (!game) return;
 
-  if (game.status !== GameStatus.SETUP) {
-    return respond(interaction, {
-      content:
-        "You can't change the point interval of a game that is not in setup mode.",
-    });
-  }
-
   if (game.createdById !== interaction.user.id) {
     return respond(interaction, {
       content:
@@ -45,6 +38,6 @@ export const gameSetPointIntervalCommand: SubcommandFunction<
   await prisma.game.setPointInterval(game.id, pointInterval);
 
   return respond(interaction, {
-    content: `The point interval has been set to ${args['point-interval']} minutes.`,
+    content: `The point interval has been set to ${args['point-interval']} minutes.${game.status !== GameStatus.SETUP ? ' The interval will change after the next point has been awarded.' : ''}`,
   });
 };
