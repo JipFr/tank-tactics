@@ -1030,10 +1030,6 @@ export const prisma = boringPrisma.$extends({
       async setPointInterval(gameId: string, pointInterval: number) {
         const game = await prisma.game.getGame(gameId);
 
-        if (game.status !== GameStatus.SETUP) {
-          throw new GameNotInSetupModeError();
-        }
-
         return prisma.game.update({
           where: { id: gameId },
           data: { pointInterval },
