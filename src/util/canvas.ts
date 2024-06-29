@@ -3,6 +3,8 @@ import { colors } from './colors';
 
 const boardColors = {
   background: '#36393E',
+  pattern: '#36393E',
+  patternOdd: '#53565c',
   playerGradient: '#FFFFFF',
   white: '#FFFFFF',
 };
@@ -42,15 +44,22 @@ export async function gameImageGenerator(context: {
 
       canvas.setColor(boardColors.white);
 
-      const alpha = Math.max((20 - closestPlayer.gradientRange) / 20, 0);
-      let relevantPlayers = closestPlayers.filter(
+      // Grid pattern
+      let bgColor = boardColors.pattern;
+      if ((x % 2 === 0 && y % 2 === 1) || (x % 2 === 1 && y % 2 === 0))
+        bgColor = boardColors.patternOdd;
+
+      // Determine alpha
+      const alpha = Math.max((20 - closestPlayer.gradientRange) / 20, 0.2);
+
+      let playersInRange = closestPlayers.filter(
         (v) => v.range <= v.player.range
       );
 
       canvas.save();
       canvas.translate(x * cellWidth, y * cellHeight);
       if (closestPlayer.range !== 0) {
-        if (relevantPlayers.length > 0) {
+        if (playersInRange.length > 0) {
           const gradient = canvas.createLinearGradient(
             0,
             0,
@@ -58,8 +67,8 @@ export async function gameImageGenerator(context: {
             cellHeight
           );
 
-          for (const [i, relevantPlayer] of relevantPlayers.entries()) {
-            let offset = 1 / relevantPlayers.length;
+          for (const [i, relevantPlayer] of playersInRange.entries()) {
+            let offset = 1 / playersInRange.length;
             const color =
               colors[relevantPlayer.player.color as keyof typeof colors];
 
@@ -71,8 +80,8 @@ export async function gameImageGenerator(context: {
             .printRectangle(0, 0, cellWidth - 1, cellHeight - 1);
         } else {
           canvas
+            .setColor(bgColor)
             .setGlobalAlpha(alpha)
-            .setColor(boardColors.playerGradient)
             .printRectangle(0, 0, cellWidth - 1, cellHeight - 1);
         }
       }
