@@ -73,14 +73,12 @@ export const gameSetupSubCommand: SubcommandFunction<
     },
   });
 
-  const pointInterval = args['point-interval'] * 60e3;
-
   const game = await prisma.game.createSetupGame({
     guildId: interaction.guildId,
     channelId: tankTacticsChannel.id,
     threadId: forumThread.id,
     createdById: interaction.user.id,
-    pointInterval,
+    pointInterval: 10 * 60 * 1_000,
     type,
   });
 

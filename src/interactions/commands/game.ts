@@ -69,7 +69,6 @@ export const GameCommand = {
       description: 'Set up a game',
       options: {
         type: GameTypeOption,
-        'point-interval': PointIntervalOption,
       },
     },
     'add-player': {

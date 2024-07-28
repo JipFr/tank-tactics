@@ -4,6 +4,7 @@ import { SubcommandFunction } from '../../../util/Command';
 import { getGame, prisma } from '../../../util/prisma';
 import { GameStatus } from '@prisma/client';
 import { Util } from '../../../util/Util';
+import { isPremiumCheck } from '../../../util/SKU';
 
 export const gameAddPlayerSubCommand: SubcommandFunction<
   (typeof GameCommand)['options']['add-player']
@@ -17,6 +18,10 @@ export const gameAddPlayerSubCommand: SubcommandFunction<
     return respond(interaction, {
       content: 'This command can only be used in a forum post.',
     });
+
+  const isPremium = interaction.entitlements.some((sku) =>
+    isPremiumCheck(sku.skuId)
+  );
 
   const game = await getGame(
     interaction.channel.parent.id,
@@ -41,9 +46,12 @@ export const gameAddPlayerSubCommand: SubcommandFunction<
     });
   }
 
-  if (game.players.length === 20) {
+  // game limit for premium is 20, non-premium is 10
+  if (game.players.length === (isPremium ? 20 : 10)) {
     return respond(interaction, {
-      content: 'This game is full, there can be no more than 20 players.',
+      content: `This game is full, there can be no more than ${
+        isPremium ? 20 : 10
+      } players.`,
     });
   }
 
