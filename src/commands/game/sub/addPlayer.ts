@@ -4,7 +4,7 @@ import { SubcommandFunction } from '../../../util/Command';
 import { getGame, prisma } from '../../../util/prisma';
 import { GameStatus } from '@prisma/client';
 import { Util } from '../../../util/Util';
-import { isPremiumCheck } from '../../../util/SKU';
+import { isPremiumGuildCheck, premiumGuildRow } from '../../../util/SKU';
 
 export const gameAddPlayerSubCommand: SubcommandFunction<
   (typeof GameCommand)['options']['add-player']
@@ -20,7 +20,7 @@ export const gameAddPlayerSubCommand: SubcommandFunction<
     });
 
   const isPremium = interaction.entitlements.some((sku) =>
-    isPremiumCheck(sku.skuId)
+    isPremiumGuildCheck(sku.skuId)
   );
 
   const game = await getGame(
@@ -47,11 +47,14 @@ export const gameAddPlayerSubCommand: SubcommandFunction<
   }
 
   // game limit for premium is 20, non-premium is 10
-  if (game.players.length === (isPremium ? 20 : 10)) {
+  if (game.players.length >= (isPremium ? 20 : 10)) {
     return respond(interaction, {
       content: `This game is full, there can be no more than ${
         isPremium ? 20 : 10
-      } players.`,
+      } players.${!isPremium ? ' Upgrade to premium to add up to 20 people.' : ''}`,
+      ...(!isPremium && {
+        components: [premiumGuildRow],
+      }),
     });
   }
 
