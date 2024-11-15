@@ -1,5 +1,14 @@
-FROM node:20.10.0 AS base
-RUN apt install libfontconfig1 fontconfig libfontconfig1-dev
+FROM node:22.11.0 AS base
+RUN apt update && apt install -y \
+  libfontconfig1 \
+  fontconfig \
+  libfontconfig1-dev \
+  python3 \
+  g++ \
+  make \
+  cmake \
+  pkg-config \
+  && rm -rf /var/lib/apt/lists/*
 
 FROM base AS install-stage
 WORKDIR /app
