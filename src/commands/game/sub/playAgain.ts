@@ -68,6 +68,12 @@ export const gamePlayAgainSubCommand: SubcommandFunction<
     });
   }
 
+  await interaction.guild.members.fetch();
+
+  const playersStillInServer = game.players.filter((player) =>
+    interaction.guild.members.cache.has(player.userId)
+  );
+
   const forumThread = await tankTacticsChannel.threads.create({
     name: `Tank Tactics Game #${gamesInServer.length + 1}`,
     autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
@@ -77,7 +83,7 @@ export const gamePlayAgainSubCommand: SubcommandFunction<
         .map((player) => `<@${player.userId}>`)
         .join(', ')}.`,
       allowedMentions: {
-        users: game.players.map((player) => player.userId),
+        users: playersStillInServer.map((player) => player.userId),
       },
     },
   });
@@ -86,7 +92,7 @@ export const gamePlayAgainSubCommand: SubcommandFunction<
     channelId: tankTacticsChannel.id,
     threadId: forumThread.id,
     createdById: interaction.user.id,
-    players: game.players.map((player) => ({ userId: player.userId })),
+    players: playersStillInServer.map((player) => ({ userId: player.userId })),
     pointInterval: game.pointInterval,
     type: game.type,
   });

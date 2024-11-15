@@ -137,6 +137,11 @@ export class GameManagement {
       return;
     }
 
+    if (await this.checkIfGameIsOver(game.id)) {
+      await this.handleGameOver(game.id);
+      return;
+    }
+
     const timeout = setTimeout(
       () => {
         this.apInterval(game.id);
