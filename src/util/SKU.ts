@@ -17,7 +17,6 @@ export const premiumGuildRow = {
     return {
       type: ComponentType.ActionRow,
       components: [
-        // @ts-expect-error - This is a valid button, just not in the typings yet
         {
           type: ComponentType.Button,
           style: 6,
